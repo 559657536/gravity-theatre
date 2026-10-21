@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#080c11">
+  <meta name="description" content="亲手拨动一座微型宇宙。五幕实时星系、可听见的引力，以及一张属于此刻的宇宙明信片。">
+  <title>引力剧场 · Gravity Theatre</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23080c11'/%3E%3Cellipse cx='32' cy='32' rx='25' ry='12' transform='rotate(-35 32 32)' stroke='%23dec4a0' fill='none' stroke-width='2'/%3E%3Ccircle cx='32' cy='32' r='6' fill='%23dec4a0'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <canvas id="universe" aria-label="可交互的星系。拖动牵引星辰，使用下方按钮切换交互方式。"></canvas>
+  <div class="vignette" aria-hidden="true"></div>
+  <div class="grain" aria-hidden="true"></div>
+  <header class="masthead ui">
+    <a class="brand" href="#" aria-label="引力剧场首页">
+      <svg class="brand-mark" viewBox="0 0 48 48" aria-hidden="true"><ellipse cx="24" cy="24" rx="23" ry="10" transform="rotate(-38 24 24)"/><circle cx="24" cy="24" r="4"/><circle cx="7" cy="34" r="2"/></svg>
+      <span>引力剧场<small>GRAVITY THEATRE</small></span>
+    </a>
+    <span class="edition">一份送给好奇心的礼物 <span>·</span> EST. 2026</span>
+    <nav class="header-actions" aria-label="作品功能">
+      <button id="sound-toggle" class="text-button" aria-pressed="false" title="开启生成式声音"><span class="sound-bars" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span class="sound-label">声音关闭</span></button>
+      <button id="help-open" class="icon-button" aria-label="打开玩法说明" title="玩法说明">?</button>
+      <button id="cinema-toggle" class="icon-button" aria-label="进入沉浸模式" title="沉浸模式 · H"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 3H3v4m10-4h4v4M3 13v4h4m10-4v4h-4"/></svg></button>
+    </nav>
+  </header>
+
+  <main class="ui">
+    <section class="story-panel" aria-labelledby="intro-title">
+      <p class="eyebrow"><span class="live-dot"></span> AN INTERACTIVE COSMIC POEM</p>
+      <h1 id="intro-title">把一瞬，<br>留给<span>宇宙。</span></h1>
+      <p class="intro">没有两片完全相同的星空。<br>你伸出手的这一刻，也一样。</p>
+      <div class="scenes-heading"><span>五幕宇宙</span><span>SELECT A CHAPTER</span></div>
+      <nav class="scenes" aria-label="选择宇宙场景">
+        <button class="scene active" data-scene="spiral" aria-pressed="true"><span class="scene-no">01</span><span class="scene-name">星河初生<small>GENESIS</small></span><span class="scene-symbol" aria-hidden="true">◎</span></button>
+        <button class="scene" data-scene="collision" aria-pressed="false"><span class="scene-no">02</span><span class="scene-name">双星之舞<small>ENCOUNTER</small></span><span class="scene-symbol" aria-hidden="true">∞</span></button>
+        <button class="scene" data-scene="blackhole" aria-pressed="false"><span class="scene-no">03</span><span class="scene-name">光的边界<small>EVENT HORIZON</small></span><span class="scene-symbol" aria-hidden="true">◉</span></button>
+        <button class="scene" data-scene="nebula" aria-pressed="false"><span class="scene-no">04</span><span class="scene-name">星云来信<small>NEBULA</small></span><span class="scene-symbol" aria-hidden="true">✧</span></button>
+        <button class="scene" data-scene="supernova" aria-pressed="false"><span class="scene-no">05</span><span class="scene-name">最后的盛放<small>SUPERNOVA</small></span><span class="scene-symbol" aria-hidden="true">✳</span></button>
+      </nav>
+      <button id="tour-toggle" class="tour-button" aria-pressed="false"><span class="tour-icon">▷</span><span>让宇宙自己讲述</span><span class="tour-duration">60 SEC</span></button>
+    </section>
+
+    <div class="scene-caption" aria-live="polite"><span id="scene-coordinate">CHAPTER 01 / GENESIS</span><div class="caption-line"></div><span id="scene-poem">万千星辰，始于一次相遇。</span></div>
+
+    <section class="instrument-panel" aria-label="宇宙参数">
+      <div class="instrument-title"><span>调律宇宙</span><button id="reset" class="reset-button" title="重置当前场景">↺ 重置</button></div>
+      <label class="range-label" for="gravity"><span>引力强度</span><output id="gravity-value" for="gravity">1.00</output></label>
+      <input id="gravity" type="range" min="0.2" max="2" step="0.05" value="1" aria-label="引力强度">
+      <label class="range-label" for="speed"><span>时间流速</span><output id="speed-value" for="speed">1.00 ×</output></label>
+      <input id="speed" type="range" min="0" max="2" step="0.05" value="1" aria-label="时间流速">
+      <label class="range-label" for="glow"><span>星光亮度</span><output id="glow-value" for="glow">1.00</output></label>
+      <input id="glow" type="range" min="0.3" max="2" step="0.05" value="1" aria-label="星光亮度">
+      <div class="instrument-bottom"><span>缓缓环绕</span><button id="rotate-toggle" class="switch" role="switch" aria-checked="true" aria-label="自动环绕"><span></span></button></div>
+      <button id="postcard-open" class="postcard-button"><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="2.5" y="4" width="15" height="12" rx="1"/><path d="m3 5 7 6 7-6"/></svg>把此刻带走<span>↗</span></button>
+    </section>
+
+    <section class="controls" aria-label="星系交互工具">
+      <div class="interaction-hint" id="interaction-hint"><span class="hint-cross">＋</span> 在星空中按住并拖动，让星辰靠近你</div>
+      <div class="dock">
+        <div class="tool-group" role="group" aria-label="交互方式">
+          <button class="tool active" data-tool="attract" aria-pressed="true"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v4m0 12v4M2 12h4m12 0h4"/></svg><span>牵引</span><kbd>1</kbd></button>
+          <button class="tool" data-tool="repel" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="m5 2-3 3m3-3v5M2 5h5m12 17 3-3m-3 3v-5m3 2h-5"/></svg><span>推开</span><kbd>2</kbd></button>
+          <button class="tool" data-tool="orbit" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="12" rx="10" ry="5" transform="rotate(-35 12 12)"/><circle cx="12" cy="12" r="2"/></svg><span>环绕</span><kbd>3</kbd></button>
+        </div>
+        <span class="dock-divider"></span>
+        <button id="burst" class="burst-button"><span>✦</span> 点燃星空</button>
+        <span class="dock-divider"></span>
+        <button id="pause" class="pause-button" aria-label="暂停时间" aria-pressed="false" title="暂停 / 继续 · 空格"><span id="pause-icon">Ⅱ</span></button>
+      </div>
+    </section>
+  </main>
+
+  <footer class="statusbar ui"><div class="status-left"><span class="live-dot"></span><span id="particle-count">星系正在诞生</span><span class="status-divider">/</span><span id="fps">— FPS</span><span class="status-divider desktop-only">/</span><span class="desktop-only" id="time-status">时间流动中</span></div><span class="footer-note">灵感来自引力，想象不受其限。</span><button id="about-open">MADE WITH ASTRA <span>✧</span></button></footer>
+  <button id="cinema-exit" hidden>退出沉浸 <kbd>H</kbd></button>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <div id="error-banner" class="error-banner" hidden role="alert"></div>
+
+  <dialog id="help-dialog" aria-labelledby="help-title"><button class="dialog-close" aria-label="关闭玩法说明">×</button><p class="eyebrow">A SMALL GUIDE TO YOUR UNIVERSE</p><h2 id="help-title">宇宙，听你的。</h2><p class="dialog-intro">不需要懂天文学。只需要一点好奇心。</p><div class="guide-rows"><div><span>01</span><p><strong>伸出手</strong>在星空里按住拖动，牵引或推开星辰。切换「环绕」，就能转动你的视角。</p></div><div><span>02</span><p><strong>改变规则</strong>调节引力、时间与星光。滚轮拉近远方；点击「点燃星空」，制造一场闪耀。</p></div><div><span>03</span><p><strong>听见引力</strong>开启声音后，每次触碰都会落下一枚音符。五幕宇宙，有五种和声。</p></div><div><span>04</span><p><strong>留下此刻</strong>「把此刻带走」会生成高清明信片。也可以把当前场景存入本机收藏。</p></div></div><div class="shortcuts"><span><kbd>1</kbd><kbd>2</kbd><kbd>3</kbd> 切换工具</span><span><kbd>SPACE</kbd> 暂停</span><span><kbd>B</kbd> 点燃</span><span><kbd>H</kbd> 沉浸</span><span><kbd>M</kbd> 声音</span></div><p class="small-note">这是一件以引力为灵感的生成艺术作品；粒子运动经过艺术化设计，并非精确天体模拟。声音由浏览器实时合成，无需联网。</p></dialog>
+
+  <dialog id="postcard-dialog" class="postcard-dialog" aria-labelledby="postcard-title"><button class="dialog-close" aria-label="关闭宇宙明信片">×</button><p class="eyebrow">A MOMENT, MADE YOURS</p><h2 id="postcard-title">来自宇宙的一封信。</h2><img id="postcard-preview" alt="当前宇宙场景生成的明信片"><div class="postcard-actions"><button id="download-postcard" class="primary-button">↓ 保存明信片</button><button id="bookmark" class="secondary-button">＋ 收藏这片宇宙</button></div><div id="bookmarks" class="bookmarks"></div><p class="small-note">明信片保存为 PNG 图片。收藏保存在此浏览器，可恢复场景、视角和参数，最多保留 6 份。</p></dialog>
+
+  <dialog id="about-dialog" aria-labelledby="about-title"><button class="dialog-close" aria-label="关闭作品介绍">×</button><p class="eyebrow">A GIFT THAT STAYS</p><h2 id="about-title">有些东西，<br>不应该随到期而结束。</h2><p class="about-copy">所以，我们做了这一小片宇宙。<br><br>它没有终点，也没有正确答案。<br>每一次靠近，每一次放手，<br>都会留下不一样的轨迹。<br><br>愿你永远保有，把手伸向星空的好奇心。</p><div class="about-signature">FOR LUO <span>·</span> 2026.10.21</div><p class="small-note">由 Astra 实现星系引擎，与 Codex 协作完成。全部视觉与声音实时生成。本地离线版无需账号、会员或外部素材。</p></dialog>
+
+  <script src="engine.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

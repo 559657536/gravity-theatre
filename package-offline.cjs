@@ -1,0 +1,12 @@
+const fs = require('node:fs');
+const path = require('node:path');
+const root = __dirname;
+let html = fs.readFileSync(path.join(root, 'dist/index.html'), 'utf8');
+const css = fs.readFileSync(path.join(root, 'dist/style.css'), 'utf8');
+const engine = fs.readFileSync(path.join(root, 'dist/engine.js'), 'utf8');
+const app = fs.readFileSync(path.join(root, 'dist/app.js'), 'utf8');
+html = html.replace('<link rel="stylesheet" href="style.css">', () => '<style>\n' + css + '\n</style>');
+html = html.replace('<script src="engine.js"></script>', () => '<script>\n' + engine.replace(/<\/script/gi, '<\\/script') + '\n</script>');
+html = html.replace('<script src="app.js"></script>', () => '<script>\n' + app.replace(/<\/script/gi, '<\\/script') + '\n</script>');
+fs.writeFileSync(path.join(root, '引力剧场.html'), html, 'utf8');
+console.log('Offline artifact written: 引力剧场.html (' + Buffer.byteLength(html) + ' bytes)');
